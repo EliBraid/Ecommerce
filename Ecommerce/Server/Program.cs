@@ -1,5 +1,9 @@
 global using Ecommerce.Shared;
+global using Ecommerce.Server.Service.ProductService;
+using Ecommerce.Server.Data;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
+using Ecommerce.Server.Service.ProductService.ProductService;
 
 namespace Ecommerce
 {
@@ -10,12 +14,15 @@ namespace Ecommerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+            builder.Services.AddDbContext<ProductDbContext>(option =>
+                option.UseSqlServer(builder.Configuration.GetConnectionString("EcommerceDatabase")));
             builder.Services.AddControllersWithViews();
+            
             builder.Services.AddRazorPages();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-           
+
+            builder.Services.AddScoped<IProductsService, ProductsService>();
 
             var app = builder.Build();
 
