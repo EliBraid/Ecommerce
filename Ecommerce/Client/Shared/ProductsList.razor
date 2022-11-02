@@ -1,4 +1,5 @@
 ﻿@inject IProductsService service
+@implements IDisposable
 @if(service.Products == null || service.Products.Count == 0)
 {
     <span>Loading Products...</span>
@@ -10,12 +11,12 @@ else
         {
                 <li class="media my-3">
                     <div class="media-img-wrapper mr-2">
-                        <a href="#">
+                        <a href="/Products/@product.Id">
                             <img class="media-img" src="@product.ImageURL" alt="@product.Title">
                         </a>
                     </div>
                     <div class="media-body">
-                <a href="/product/@product.Id">
+                    <a href="/Products/@product.Id">
                             <h4 class="mb-0">@product.Title</h4>
                         </a>
                         <p>@product.Description</p>
@@ -30,11 +31,13 @@ else
 
 
 @code {
-    private static List<Product> products = new List<Product>();
-
-
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        await service.GetProductsAsync();
+        service.ProductsChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        service.ProductsChanged -= StateHasChanged;
     }
 }

@@ -3,5 +3,9 @@
     public interface IProductsService
     {
         Task<ServiceResponse<List<Product>>> GetProductsAsync();
+
+        Task<ServiceResponse<Product>> GetProductsByIdAsync(int id);
+
+        Task<ServiceResponse<List<Product>>> GetProductsByURLAsync(string url);
     }
 }

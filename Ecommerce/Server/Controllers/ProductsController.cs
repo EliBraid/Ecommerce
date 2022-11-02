@@ -18,9 +18,24 @@ namespace Ecommerce.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult< ServiceResponse<List<Product>>>> GetProduct()
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProduct()
         {
             var result = await _service.GetProductsAsync();
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductById(int id)
+        {
+            var result = await _service.GetProductsByIdAsync(id);
+
+            return Ok(result);
+        }
+        [HttpGet("Category/{url}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductByUrl(string url)
+        {
+            var result = await _service.GetProductsByURLAsync(url);
 
             return Ok(result);
         }

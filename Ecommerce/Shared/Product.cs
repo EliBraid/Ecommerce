@@ -18,5 +18,9 @@ namespace Ecommerce.Shared
         public string ImageURL { get; set; } = string.Empty;
         [Column(TypeName ="decimal(18,2)")]
         public decimal price { get; set; }
+
+        public Category? Category { get; set; }
+
+        public int CategoryId { get; set; }
     }
 }

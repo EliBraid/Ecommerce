@@ -4,8 +4,13 @@ namespace Ecommerce.Client.Service.ProductService
 {
     public interface IProductsService
     {
+        event Action ProductsChanged;
         List<Product> Products { get; set; }
 
         Task GetProductsAsync();
+
+        Task<ServiceResponse<Product>> GetProductsByIdAsync(int id);
+
+        Task GetProducts(string? categoryurl);
     }
 }

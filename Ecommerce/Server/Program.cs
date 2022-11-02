@@ -4,6 +4,7 @@ using Ecommerce.Server.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Ecommerce.Server.Service.ProductService.ProductService;
+using Ecommerce.Server.Service.CategoryService;
 
 namespace Ecommerce
 {
@@ -23,7 +24,7 @@ namespace Ecommerce
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<IProductsService, ProductsService>();
-
+            builder.Services.AddScoped<ICategorysService, CategoriesServies>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

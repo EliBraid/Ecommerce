@@ -1,4 +1,5 @@
 using Ecommerce.Client;
+using Ecommerce.Client.Service.CategoryService;
 using Ecommerce.Client.Service.ProductService;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -15,7 +16,7 @@ namespace Ecommerce.Client
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             builder.Services.AddScoped<IProductsService, ProductsService>();
-
+            builder.Services.AddScoped<ICategoryService, CategoriesService>();
             await builder.Build().RunAsync();
         }
     }
