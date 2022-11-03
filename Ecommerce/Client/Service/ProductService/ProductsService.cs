@@ -11,6 +11,7 @@ namespace Ecommerce.Client.Service.ProductService
         _httpClient = httpClient;
         }
         public List<Product> Products { get; set; } = new List<Product>();
+        public string Message { get; set; }
 
         public event Action ProductsChanged;
 
@@ -37,6 +38,23 @@ namespace Ecommerce.Client.Service.ProductService
         {
             var result = await _httpClient.GetFromJsonAsync<ServiceResponse<Product>>($"api/Products/{id}");
             return result;
+        }
+
+        public async Task<List<string>> GetProductsSearchSuggestions(string searchtext)
+        {
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<string>>>($"api/Products/SearchSuggestions/{searchtext}");
+
+            return result.Data;
+        }
+
+        public async Task SearchProducts(string search)
+        {
+            var result = await _httpClient.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/Products/Search/{search}");
+            if (result != null && result.Data != null)
+                Products = result.Data;
+            if (Products.Count == 0) Message = "No Products found";
+
+            ProductsChanged?.Invoke();
         }
     }
 }

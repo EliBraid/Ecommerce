@@ -47,5 +47,12 @@ namespace Ecommerce.Server.Controllers
 
             return Ok(result);
         }
+        [HttpGet("SearchSuggestions/{searchtext}")]
+        public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProductSearchSuggestion(string searchtext)
+        {
+            var result = await _service.GetProductsSearchSuggestionAsync(searchtext);
+
+            return Ok(result);
+        }
     }
 }

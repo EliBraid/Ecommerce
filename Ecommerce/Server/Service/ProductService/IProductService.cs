@@ -9,5 +9,7 @@
         Task<ServiceResponse<List<Product>>> GetProductsByURLAsync(string url);
 
         Task<ServiceResponse<List<Product>>> GetProductsSearchAsync(string search);
+
+        Task<ServiceResponse<List<string>>> GetProductsSearchSuggestionAsync(string searchText);
     }
 }

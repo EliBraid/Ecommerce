@@ -58,13 +58,48 @@ namespace Ecommerce.Server.Service.ProductService
 
         public async Task<ServiceResponse<List<Product>>> GetProductsSearchAsync(string search)
         {
-
-            var products = await _productDbContext.Products.Where(p => p.Title.ToLower().Contains(search.ToLower())
-            || p.Description.ToLower().Contains(search.ToLower())).Include(p=> p.Variants).ToListAsync();
-
-            return new ServiceResponse<List<Product>> { 
-                Data = products
+            ServiceResponse<List<Product>> response = new ServiceResponse<List<Product>>
+            {
+                Data = await FindProductSearchAsync(search)
             };
+                
+            return response;
+        }
+
+        private async Task<List<Product>> FindProductSearchAsync(string search)
+        {
+            return await _productDbContext.Products.Where(p => p.Title.ToLower().Contains(search.ToLower())
+            || p.Description.ToLower().Contains(search.ToLower())).Include(p => p.Variants).ToListAsync();
+            
+        }
+
+        public async Task<ServiceResponse<List<string>>> GetProductsSearchSuggestionAsync(string searchText)
+        {
+            var products =await FindProductSearchAsync(searchText);
+            List<string> result = new List<string>();
+            foreach (var product in products)
+            {
+                if (product.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                {
+                    result.Add(product.Title);
+                }
+                if(product.Description != null)
+                {
+                    var punctuation = product.Description.Where(char.IsPunctuation)
+                        .Distinct().ToArray();
+                    var words = product.Description.Split()
+                        .Select(s => s.Trim(punctuation));
+                    foreach (var word in words)
+                    {
+                        if(word.Contains(searchText,StringComparison.OrdinalIgnoreCase)
+                            && !result.Contains(word))
+                        {
+                            result.Add(word);
+                        }
+                    }
+                }
+            }
+            return new ServiceResponse<List<string>> { Data=result };
         }
     }
 }
