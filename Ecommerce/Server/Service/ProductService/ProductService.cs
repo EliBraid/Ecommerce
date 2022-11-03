@@ -16,7 +16,7 @@ namespace Ecommerce.Server.Service.ProductService
         {
             var response = new ServiceResponse<List<Product>>
             {
-                Data = await _productDbContext.Products.ToListAsync()
+                Data = await _productDbContext.Products.Include(p=>p.Variants).ToListAsync()
             };
             return response;
         }
@@ -24,7 +24,10 @@ namespace Ecommerce.Server.Service.ProductService
         {
             var response = new ServiceResponse<Product>();
 
-            var product =await _productDbContext.Products.FindAsync(id);
+            var product = await _productDbContext.Products
+                .Include(p => p.Variants)
+                .ThenInclude(v => v.ProductType)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if(product == null)
             {
@@ -45,10 +48,23 @@ namespace Ecommerce.Server.Service.ProductService
             var response = new ServiceResponse<List<Product>>
             {
                 Data = await _productDbContext.Products.Where(p=>
-                p.Category.Url.ToLower().Equals(url.ToLower())).ToListAsync()
+                p.Category.Url.ToLower().Equals(url.ToLower()))
+                .Include(p=> p.Variants)
+                .ToListAsync()
             };
 
             return response;
+        }
+
+        public async Task<ServiceResponse<List<Product>>> GetProductsSearchAsync(string search)
+        {
+
+            var products = await _productDbContext.Products.Where(p => p.Title.ToLower().Contains(search.ToLower())
+            || p.Description.ToLower().Contains(search.ToLower())).Include(p=> p.Variants).ToListAsync();
+
+            return new ServiceResponse<List<Product>> { 
+                Data = products
+            };
         }
     }
 }
